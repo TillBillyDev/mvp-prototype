@@ -29,8 +29,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         }
         */
 
-        //xhr.setRequestHeader('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhcGkuYnV5ZXJzLnRpbGxiaWxseS5kZXYiLCJpYXQiOjE1MDc3MDAyMzQsIm5iZiI6MTUwNzcwMDIzNCwiZXhwIjoxNTEyNTM4NjM0LCJ1aWQiOiIxIn0.qxAqJRkdkxmg8K-ZheI_XJlObqzxjwWjWIzhSNicMpo');
-        
+        // Will update JWT for the next build
         xhr.setRequestHeader('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhcGkuYnV5ZXJzLnRpbGxiaWxseS5kZXYiLCJpYXQiOjE1MTYxODM4NjcsIm5iZiI6MTUxNjE4Mzg2NywiZXhwIjoxNTIxMDIyMjY3LCJ1aWQiOiIxIn0.4wYV1ZHFZAO89T18_i72WYLhbsJeMRtYraiu7YypPLk');
         
         xhr.onreadystatechange = function(){
@@ -225,9 +224,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 (function(scope){
 
     var key = "session";
-
-    // Bearer $2y$13$pHZo2UCCzY1//HPQUxcxT.FkXQ9ZyoIntfM1sCSyb05A/x1m8mZE.
-
+    
     function createSession(_token, _user, _callback){
 
         var token = _token,
