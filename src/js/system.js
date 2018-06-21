@@ -22,23 +22,18 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
         xhr.open('GET', CONSTANTS.API_BASE + obj.path + params, true);
 
-        /*
         if(_session != null){
             var token = 'Bearer ' + _session.token;
             xhr.setRequestHeader('Authorization', token);
         }
-        */
 
-        // Will update JWT for the next build
-        xhr.setRequestHeader('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhcGkuYnV5ZXJzLnRpbGxiaWxseS5kZXYiLCJpYXQiOjE1MTYxODM4NjcsIm5iZiI6MTUxNjE4Mzg2NywiZXhwIjoxNTIxMDIyMjY3LCJ1aWQiOiIxIn0.4wYV1ZHFZAO89T18_i72WYLhbsJeMRtYraiu7YypPLk');
-        
         xhr.onreadystatechange = function(){
 
             if(xhr.readyState === 4){
 
                 if(xhr.status >= 200 && xhr.status < 300){
 
-                    // Declaring this in all instances as ready state keeps changing 
+                    // Declaring this in all instances as ready state keeps changing
                     var response = '';
 
                     if(xhr.responseText){
@@ -61,7 +56,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
                 } else {
 
-                    // Declaring this in all instances as ready state keeps changing 
+                    // Declaring this in all instances as ready state keeps changing
                     var response = '';
 
                     if(xhr.responseText){
@@ -110,15 +105,10 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-        /*
         if(_session != null){
             var token = 'Bearer ' + _session.token;
             xhr.setRequestHeader('Authorization', token);
         }
-        */
-
-        xhr.setRequestHeader('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhcGkuYnV5ZXJzLnRpbGxiaWxseS5kZXYiLCJpYXQiOjE1MDI4NTc2NDgsIm5iZiI6MTUwMjg1NzY0OCwiZXhwIjoxNTA3Njk2MDQ4LCJ1aWQiOiIxIn0.yMl9ooWyJ0OAUohVua2weQELEz5se8QSncfwSBd3zRU');
-
 
         xhr.onreadystatechange = function(){
 
@@ -224,7 +214,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 (function(scope){
 
     var key = "session";
-    
+
     function createSession(_token, _user, _callback){
 
         var token = _token,
@@ -356,6 +346,14 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
     }
 
+    function isActive(){
+        var s = getSession();
+        if(s == null){
+            return false;
+        }
+        return true;
+    }
+
     scope.Session = {
 
         create: function(token, user, callback){
@@ -378,15 +376,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
             updateOnLoad(callback);
         },
 
-        isActive: function(){
-            var s = getSession();
-
-            if(s == null){
-                return false;
-            }
-
-            return true;
-        }
+        isActive: isActive
 
     }
 
@@ -409,7 +399,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
         //Core.Router.onBeforeContentUnload(clearPageEvents);
         //ScreenManager.addUnloadEvent(clearPageEvents);
-        
+
         window.addEventListener('resize', function(e){
 
             for(var fn in temp.resize){
@@ -539,7 +529,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 })(window); // Events Service
 
 (function(scope){
-        
+
     var COLLECTION = {};
 
     function addType(type){
@@ -556,21 +546,21 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         var _coll = COLLECTION[type];
 
         item.pos_in_array = _coll.length;
-        
+
         if(props && typeof props === 'object'){
-            
+
             for(var p in props){
-                
+
                 if(props.hasOwnProperty(p)){
-                    
+
                     item[p] = props[p];
-                    
+
                 }
-                
+
             }
-            
+
         }
-        
+
         _coll.push(item);
 
         return item;
@@ -631,23 +621,23 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         }
         return null;
     }
-    
+
     function clearCollection(type){
         if(COLLECTION.hasOwnProperty(type)){
             COLLECTION[type] = [];
         }
     }
-    
+
     function save(){
-        
-        
-        
+
+
+
     }
 
     function clear(){
-        
-        
-        
+
+
+
     }
 
     scope.Collection = {
@@ -663,7 +653,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         getItemById: getItemById,
 
         getCollection: getCollection,
-        
+
         clearCollection: clearCollection,
 
         saveToStorage: save,
@@ -671,42 +661,42 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         clearStorage: clear
 
     };
-        
+
 })(window); // Data Collection
 
 (function(scope){
-    
+
     var helpers = {},
         math = {};
-    
+
     helpers.extendDefaults = function(source, properties){
-        
+
         var property;
-        
+
         for(property in properties) {
             if (properties.hasOwnProperty(property)) {
                 source[property] = properties[property];
             }
         }
-        
+
         return source;
-        
+
     };
-    
+
     helpers.serialize = function(queryObject){
         var paramArray = [],
             queryString = "";
-        
+
         for(var p in queryObject){
             if (queryObject.hasOwnProperty(p)){
                 paramArray.push(encodeURIComponent(p) + "=" + encodeURIComponent(queryObject[p]));
             }
         }
-        
+
         queryString = paramArray.join("&");
         return queryString;
     };
-    
+
     math.easeInOut = function (currentTime, start, change, duration) {
         currentTime /= duration / 2;
         if (currentTime < 1) {
@@ -715,19 +705,23 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         currentTime -= 1;
         return -change / 2 * (currentTime * (currentTime - 2) - 1) + start;
     }
-    
+
     math.range = function(min, max, val){
         return Math.abs(val / (max - min));
     };
-    
+
     helpers.Math = math;
-    
+
     scope.Helpers = helpers;
-    
+
 })(window); // Helper functions
 
+/**
+ * DOM Enhancers
+ * Adds additional properties to native DOM objects
+ */
 (function(scope){
-    
+
     HTMLElement.prototype.CSS = function(css){
         var prefixedProps = ['transform', 'transition', 'flex'];
         for(var prop in css){
@@ -743,45 +737,45 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         }
         return this.style;
     };
-    
+
     HTMLElement.prototype.get2DTransforms = function(){
         var style = getComputedStyle(this),
             transform = style.transform || style.webkitTransform || style.mozTransform;
-        
+
         transform = transform.replace('matrix(', '');
         transform = transform.replace(')', '');
         transform = transform.split(',');
-        
+
         return {
             x: parseInt(transform[4]),
             y: parseInt(transform[5])
         };
     };
-    
+
     Date.prototype.getDayName = function(full){
         var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
             days_full = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return full ? days_full[this.getDay()] : days[this.getDay()];
     };
-    
+
     Date.prototype.getMonthName = function(full){
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
             months_full = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         return full ? months_full[this.getMonth()] : months[this.getMonth()];
     };
-    
+
     scope.createElement = function(_tag, _class){
         var elem = document.createElement(_tag);
         if(_class) elem.className = _class;
         return elem;
     };
-    
+
 })(window); // DOM enhancers
 
 (function(scope){
-    
+
     function panel(){
-        
+
         this.slides = {
             total: 0,
             current: 0,
@@ -789,26 +783,26 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
             xPos: 0,
             maxXPos: 0
         };
-        
+
         this.touchEvents = null;
-        
+
         this.parent = createElement('div', 'slider_panel single');
         this.slider = createElement('div', 'slider_panel-slider');
         this.nav = createElement('div', 'slider_panel-nav');
-        
+
         this.slider.CSS({
             transition: 'all .3s ease'
         });
         this.nav.style.visibility = 'hidden';
-        
+
         this.parent.appendChild(this.slider);
         this.parent.appendChild(this.nav);
     }
-    
+
     panel.prototype.add = function(slide_elem, nav_elem){
-        
+
         var _slide, _nav;
-        
+
         if(typeof slide_elem === 'string'){
             _slide = createElement('div', 'slider_panel-panel');
             _slide.innerHTML = slide_elem;
@@ -816,157 +810,157 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
             _slide = slide_elem;
             _slide.classList.add('slider_panel-panel');
         }
-        
+
         if(typeof nav_elem === 'string'){
             _nav = createElement('a');
             _nav.innerHTML = nav_elem;
         } else {
             _nav = nav_elem;
         }
-        
+
         this.slider.appendChild(_slide);
         this.nav.appendChild(_nav);
-        
+
         _nav.onclick = slideTo.bind(this, this.slides.total);
-        
+
         this.slides.total++;
-        
+
         readjustWidth.call(this);
-        
+
         if(this.slides.total > 1){
             this.parent.classList.remove('single');
             this.nav.style.visibility = 'visible';
             setupTouch.call(this);
         }
-        
+
     };
-    
+
     panel.prototype.appendTo = function(elem){
         elem.appendChild(this.parent);
     };
-    
+
     function readjustWidth(){
-        
+
         this.slides.width = 100 / this.slides.total;
         this.slides.maxXPos = this.slides.width * (this.slides.total - 1)
-        
+
         this.slider.style.width = (this.slides.total * 100) + '%';
-        
+
         for(let i = 0; i < this.slider.children.length; i++){
             this.slider.children[i].style.width = this.slides.width + '%';
         }
-        
+
         slideTo.call(this, this.slides.current);
-        
+
     }
-    
+
     function slideTo(num, _time){
         var slider = this.slider,
             total = this.slides.total,
             translateX = (num / total) * -100,
             time = typeof _time === 'number' ? _time : 300;
-        
+
         if(time > 500) time = 500;
-        
+
         slider.CSS({
             transition: 'all ' + time + 'ms ease'
         });
-        
+
         slider.CSS({
             transform: 'translateX(' + translateX + '%)'
         });
-        
+
         this.slides.current = num;
         this.slides.xPos = translateX;
     }
-    
-    
+
+
     // Setup touch
-    
+
     function setupTouch(){
         var slider = this.slider,
             _this = this;
-        
+
         slider.addTouchListeners({
-            
+
             onstart: function(e){
                 slider.CSS({
                     transition: 'none'
                 });
             },
-            
+
             onmove: function(e){
-                
+
                 if(e.axis === 'vertical') return;
-                
+
                 //e.event.preventDefault();
-                
+
                 var percentage = (e.delta.x / slider.offsetWidth) * 100,
                     max = -1 * _this.slides.maxXPos,
                     distance = _this.slides.xPos + percentage;
-                
+
                 if(distance >= 0) distance = 0;
                 if(distance < max) distance = max;
-                
+
                 _this.slides.xPos = distance;
-                
+
                 slider.CSS({
                     transform: 'translateX(' + distance + '%)'
                 });
             },
-            
+
             onend: function(e){
-                
+
                 if(e.axis === 'horizontal'){
                     var time = 300,
                         dist = 0,
                         total = _this.slides.total,
                         jump_to = _this.slides.current,
                         velocity = Math.abs(e.velocity.x / _this.slider.offsetWidth) * 100;
-                    
+
                     if(e.direction === 'left'){
                         if(jump_to < total - 1) jump_to++;
                     } else if(e.direction === 'right'){
                         if(jump_to > 0) jump_to--;
                     }
-                    
+
                     dist = -100 * (jump_to / total);
                     dist = Math.abs(dist - _this.slides.xPos);
-                    
+
                     if(dist > .9 * _this.slides.width){
                         jump_to = _this.slides.current;
                     }
-                    
+
                     if(dist > 0) time = dist / velocity;
-                    
+
                     slideTo.call(_this, jump_to, time);
                 }
             }
-            
+
         });
     }
-    
+
     scope.SliderPanel = panel;
-    
+
 })(window); // Slider panels
 
 (function(scope){
-    
+
     function touchEvents(elem, events){
         if(elem && events){
             setup.call(this, elem, events);
         }
     }
-    
+
     function setup(elem, events){
         this.timestamp = null;
-        
+
         this.elem = elem;
-        
+
         this.touchObj = getTouchObj();
-        
+
         this.events = events;
-        
+
         if(!elem.getAttribute('data-touch-active')){
             elem.addEventListener("touchstart", onTouchStart.bind(this), {passive: true});
             elem.addEventListener("touchmove", onTouchMove.bind(this), {passive: true});
@@ -974,7 +968,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
             elem.setAttribute('data-touch-active', true);
         }
     };
-    
+
     function getTouchObj(){
         return{
             x: null,
@@ -1003,171 +997,171 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
             direction: null
         }
     }
-    
+
     function onTouchStart(e){
         var touch = e.changedTouches[0],
             obj = this.touchObj;
-        
+
         obj.x = obj.initialTouch.x = touch.pageX;
         obj.y = obj.initialTouch.y = touch.pageY;
         obj.event = e;
-        
+
         //this.state.prev_touch.x = touch.pageX;
         //this.state.prev_touch.y = touch.pageY;
-        
+
         obj.initialTouch.timestamp = this.timestamp = new Date().getTime();
-        
+
         if(this.events.onstart && typeof this.events.onstart === 'function'){
             this.events.onstart.call(this.elem, obj);
         }
     }
-    
+
     function onTouchMove(e){
         var touch = e.changedTouches[0],
             obj = this.touchObj,
-            
+
             delta = {
                 x: touch.pageX - obj.x,
                 y: touch.pageY - obj.y
             },
-            
+
             timestamp = new Date().getTime(),
-            
+
             time = (timestamp - this.timestamp),
-            
+
             velocity = {
                 x: delta.x / time,
                 y: delta.y / time
             };
-        
+
         if(Math.abs(delta.x) > Math.abs(delta.y) && obj.axis !== 'vertical'){
-            
+
             obj.axis = 'horizontal';
-            
+
             if(velocity.x > 0){
                 obj.direction = 'right';
             } else {
                 obj.direction = 'left';
             }
-            
+
         } else if(obj.axis !== 'horizontal'){
-            
+
             obj.axis = 'vertical';
-            
+
             if(velocity.y > 0){
                 obj.direction = 'down';
             } else {
                 obj.direction = 'up';
             }
-            
+
         }
-        
+
         obj.x = touch.pageX;
         obj.y = touch.pageY;
         obj.velocity = velocity;
         obj.delta = delta;
         obj.event = e;
-        
+
         this.timestamp = new Date().getTime();
-        
+
         if(this.events.onmove && typeof this.events.onmove === 'function'){
             this.events.onmove.call(this.elem, obj);
         }
     }
-    
+
     function onTouchEnd(e){
         var touch = e.changedTouches[0],
             obj = this.touchObj;
-        
+
         obj.finalTouch.x = e.pageX;
         obj.finalTouch.y = e.pageY;
         obj.finalTouch.timestamp = new Date().getTime();
-        
+
         if(this.events.onend && typeof this.events.onend === 'function'){
             this.events.onend.call(this.elem, obj);
         }
-        
+
         reset.call(this);
     }
-    
+
     function reset(){
         this.touchObj = getTouchObj();
     }
-    
+
     HTMLElement.prototype.addTouchListeners = function(events){
         var _listeners = new touchEvents(this, events);
         return this;
     };
-    
+
 })(window); // Touch Events
 
 (function(scope){
-    
+
     // Private variables
     var HISTORY = ['entry_point'],
         CLEARSTACK_FLAG = false,
         STATE_DATA = null,
         ON_BEFORE_CHANGE = [];
-    
-    
-    
+
+
+
     // Push/replace state functions
-    
+
     function pushState(state){
-        
+
         beforePageChange();
-        
+
         var obj = getStateObject();
-        
+
         Helpers.extendDefaults(obj, state);
-        
+
         HISTORY.push(obj);
-        
+
         /*
         // If the object has a stateData property, this means that the current
-        // screen (before the new one is pushed) has some state information it needs 
+        // screen (before the new one is pushed) has some state information it needs
         // to keep saved
         */
         if(obj.stateData){
             history.replaceState({ state: obj.stateData }, null, null);
         }
-        
+
         history.pushState({ query_params: obj.queryParams }, '', obj.name);
-        
+
         obj.onPush();
-        
+
     }
-    
+
     function replaceState(state){
-        
+
         beforePageChange();
-        
+
         var obj = getStateObject();
-        
+
         Helpers.extendDefaults(obj, state);
-        
+
         HISTORY.pop();
-        
+
         HISTORY.push(obj);
-        
+
         history.replaceState({}, '', obj.name);
-        
+
         obj.onPush();
-        
+
     }
-    
+
     function getStateObject(){
-        
+
         var data = null;
-        
+
         if(STATE_DATA){
-            
+
             data = JSON.parse(JSON.stringify(STATE_DATA));
-            
+
             STATE_DATA = null;
-            
+
         }
-        
+
         return {
             name: 'screen',
             onPush: null,
@@ -1177,183 +1171,183 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
             stateData: data,
             isPopup: false
         }
-        
+
     }
-    
+
     function beforePageChange(){
-        
+
         // This allows controllers to run functions before the page changes
-        
+
         for(var fn = 0; fn < ON_BEFORE_CHANGE.length; fn++){
             if(typeof ON_BEFORE_CHANGE[fn] === 'function'){
                 ON_BEFORE_CHANGE[fn]();
             }
         }
-        
+
         // Clears the functions after the above loop is completed
-        
+
         ON_BEFORE_CHANGE.length = 0;
 
     }
-    
-    
-    
+
+
+
     // Stack and popstate management functions
-    
+
     function clearStack(){
-        
+
         CLEARSTACK_FLAG = true;
-        
+
         history.go(-HISTORY.length);
-        
+
     }
-    
+
     window.onpopstate = function(){
-        
+
         if(!CLEARSTACK_FLAG){
-            
+
             if(HISTORY.length > 1){
-                
+
                 var last_entry = HISTORY[HISTORY.length - 1],
                     is_popup = last_entry.isPopup,
                     back_entry;
-                
+
                 /*
                 // Run the onBack function of the current screen
                 */
                 last_entry.onBack();
                 HISTORY.pop();
-                
+
                 /*
                 // Run the onPop function of the previous screen
                 */
                 back_entry = HISTORY[HISTORY.length - 1];
                 back_entry.onPop(is_popup);
-                
+
             }
-            
+
         } else {
-            
+
             /*
             // If history length is greater than 2 then we have to remove entries but last
             */
             if(HISTORY.length > 2){
-                
+
                 HISTORY.splice(0, HISTORY.length - 1);
-                
+
             }
-            
+
             /*
             // Reset the clear stack flag
             */
             CLEARSTACK_FLAG = false;
-            
+
         }
-        
+
     }
-    
-    
-    
+
+
+
     // Link builders
-    
+
     function buildLinks(){
-        
+
         var _length = document.links.length;
-        
+
         for (var _next = 0; _next < _length; _next++){
-            
+
             if(!document.links[_next].getAttribute('site-nav')){
-                
+
                 var link = document.links[_next];
-                
+
                 if(link.classList.contains('app-nav')){
-                    
+
                     link.setAttribute('site-nav', true);
-                    
+
                     link.onclick = function(){
-                        
+
                         var qp = false;
-                        
+
                         if(this.getAttribute('data-query')){
                             qp = this.getAttribute('data-query');
                         }
-                        
+
                         ScreenManager.goto(this.getAttribute('data-href'), qp);
-                        
+
                         return false;
-                        
+
                     }
-                    
+
                 }
 
             }
 
         }
-        
+
     }
-    
+
     function buildLink(link){
-        
+
         if(!link.getAttribute('site-nav')){
-            
+
             link.setAttribute('site-nav', true);
-            
+
             link.onclick = function(){
-                
+
                 var qp = false;
-                
+
                 if(this.getAttribute('data-query')){
                     qp = this.getAttribute('data-query');
                 }
-                
+
                 ScreenManager.goto(this.getAttribute('data-href'), qp);
-                
+
                 return false;
-                
+
             }
-            
+
         }
-        
+
     }
-    
+
     function setStateData(obj){
-        
+
         STATE_DATA = obj;
-        
+
     }
-    
-    
-    
+
+
+
     // Expose accessible methods
-    
+
     scope.Router = {
-        
+
         pushState: pushState,
-        
+
         replaceState: replaceState,
-        
+
         clearStack: clearStack,
-        
+
         setStateData: setStateData,
-        
+
         buildLinks: buildLinks,
-        
+
         buildLink: buildLink,
-        
+
         onBeforePageChange: function(fn){
-            
+
             ON_BEFORE_CHANGE.push(fn);
-            
+
         },
-        
+
         log: function(){ console.log(HISTORY); }
-        
+
     };
-    
+
 })(window); // Router and history manager
 
 (function(scope){
-    
+
     var SCREENS = {},
         HISTORY = [],
         EVENTS = {
@@ -1362,18 +1356,18 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         },
         QUERY_PARAMS = null,
         Z_INDEX_COUNTER = 200;
-    
-    
-    
+
+
+
     // Screens class
-    
+
     function screen(name, opts){
-        
+
         opts = opts || {};
-        
+
         this.name = name;
         this.container = createElement('div', 'screen-frame');
-        
+
         this.defaults = {
             templateURI: null,
             view: document.body,
@@ -1384,65 +1378,65 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
             onBackFn: null, // When back is pressed while screen is active
             preserveView: false,
         };
-        
+
         this.stateData = {};
-        
+
         this.container.style.zIndex = Z_INDEX_COUNTER++;
-        
+
         Helpers.extendDefaults(this.defaults, opts)
-        
+
         return this;
-        
+
     }
-    
+
     screen.prototype.push = function(){
-        
+
         this.load(function(){
-            
+
             addState.call(this);
-            
+
             this.onLoad();
-            
+
         }.bind(this));
-        
+
     };
-    
+
     screen.prototype.replace = function(){
-        
+
         this.load(function(){
-            
+
             this.onLoad();
-            
+
             addState.call(this, true);
-            
+
         }.bind(this));
-        
+
     };
-    
-    
-    
+
+
+
     screen.prototype.load = function(callback){
-        
+
         if(this.defaults.templateURI){
-            
+
             this.loadFromURI(callback);
-            
+
         } else if(this.defaults.templateData){
-            
+
             this.loadFromProps(callback);
-            
+
         }
-        
+
     };
-    
+
     screen.prototype.loadFromURI = function(callback){
-        
+
         var xhr = new XMLHttpRequest(),
             props = this.defaults,
             uri = TEMPLATE_BASE_PATH + props.templateURI;
-        
+
         xhr.open('GET', uri, true);
-        
+
         xhr.onreadystatechange = function(){
             if(xhr.readyState === 4){
                 if(xhr.status === 200 || xhr.status === 0){
@@ -1451,33 +1445,33 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
                 }
             }
         }.bind(this);
-        
+
         xhr.send();
-        
+
     };
-    
+
     screen.prototype.loadFromProps = function(callback){
-        
+
         var props = this.defaults;
-        
+
         if(typeof props.templateData === 'object'){
-            
+
             this.container.appendChild(props.templateData);
-            
+
         } else {
-            
+
             this.container.innerHTML = this.defaults.templateData;
-            
+
         }
-        
+
         callback();
-        
+
     };
-    
-    
-    
+
+
+
     function addState(replace){
-        
+
         var obj = {
             name: this.name,
             onPush: this.runContoller.bind(this),
@@ -1485,201 +1479,201 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
             onBack: this.onBack.bind(this),
             queryParams: QUERY_PARAMS
         }
-        
+
         if(replace){
-            
+
             Router.replaceState(obj);
-            
+
         } else {
-            
+
             Router.pushState(obj);
-            
+
         }
-        
+
     }
-    
+
     screen.prototype.remove = function(){
-        
+
         this.container.innerHTML = '';
-        
+
         this.defaults.view.removeChild(this.container);
-        
-    };
-    
-    screen.prototype.show = function(){
-        
-        this.defaults.view.appendChild(this.container);
-        
-    }
-    
-    
-    
-    screen.prototype.onLoad = function(){
-        
-        this.show();
-        
-        Router.buildLinks();
-        
-        if(!this.defaults.preserveView){
-            
-            if(HISTORY.length > 0){
-                
-                var to_remove = HISTORY[HISTORY.length - 1];
-                
-                to_remove.remove();
-                
-            }
-            
-        }
-        
-        HISTORY.push(this);
-        
-    };
-    
-    screen.prototype.onAfterPop = function(via_popup){
-        
-        if(!via_popup){
-            
-            // Last screen was NOT a popup. So running controllers
-            
-            if(HISTORY.length > 0){
-                
-                HISTORY.pop();
-                
-            }
-            
-            this.load(function(){
-                
-                this.show();
-                
-                Router.buildLinks();
-                
-                this.runContoller();
-                
-            }.bind(this));
-            
-        } else {
-            
-            // console.log('on after pop, via popup')
-            
-            // Last screen was a popup, do nothing
-            
-        }
-        
-    };
-    
-    screen.prototype.runContoller = function(){
-        
-        var props = this.defaults;
-        
-        if(typeof props.controller === 'function'){
-            
-            props.controller.call(this);
-            
-        }
-        
-        for(var i = 0; i < EVENTS.ON_SCREEN_LOAD.length; i++){
-            
-            EVENTS.ON_SCREEN_LOAD[i].call(this);
-            
-        }
-        
-    };
-    
-    screen.prototype.onBack = function(){
-        
-        if(typeof this.defaults.onBackFn === 'function'){
-            
-            this.defaults.onBackFn();
-            
-        }
-        
-        if(typeof this.defaults.onExitFn === 'function'){
-            
-            this.defaults.onExitFn(function(){
-                
-                this.remove();
-                
-            }.bind(this));
-            
-        } else {
-            
-            this.remove();
-            
-        }
-        
-    };
-    
-    
-    
-    function goto(name, qp){
-        
-        if(HISTORY[HISTORY.length - 1].name === name){
-            
-            return;
-            
-        }
-        
-        if(qp){
-            QUERY_PARAMS = qp;
-        } else {
-            QUERY_PARAMS = null;
-        }
-        
-        if(SCREENS.hasOwnProperty(name)){
-            
-            var _screen = SCREENS[name];
-            
-            _screen.push();
-            
-        }
-        
-    };
-    
-    function gotoAndReplace(name, qp){
-        
-        if(qp){
-            QUERY_PARAMS = qp;
-        } else {
-            QUERY_PARAMS = null;
-        }
-        
-        if(SCREENS.hasOwnProperty(name)){
-            
-            var _screen = SCREENS[name];
-            
-            _screen.replace();
-            
-        }
-        
+
     };
 
-    
-    
+    screen.prototype.show = function(){
+
+        this.defaults.view.appendChild(this.container);
+
+    }
+
+
+
+    screen.prototype.onLoad = function(){
+
+        this.show();
+
+        Router.buildLinks();
+
+        if(!this.defaults.preserveView){
+
+            if(HISTORY.length > 0){
+
+                var to_remove = HISTORY[HISTORY.length - 1];
+
+                to_remove.remove();
+
+            }
+
+        }
+
+        HISTORY.push(this);
+
+    };
+
+    screen.prototype.onAfterPop = function(via_popup){
+
+        if(!via_popup){
+
+            // Last screen was NOT a popup. So running controllers
+
+            if(HISTORY.length > 0){
+
+                HISTORY.pop();
+
+            }
+
+            this.load(function(){
+
+                this.show();
+
+                Router.buildLinks();
+
+                this.runContoller();
+
+            }.bind(this));
+
+        } else {
+
+            // console.log('on after pop, via popup')
+
+            // Last screen was a popup, do nothing
+
+        }
+
+    };
+
+    screen.prototype.runContoller = function(){
+
+        var props = this.defaults;
+
+        if(typeof props.controller === 'function'){
+
+            props.controller.call(this);
+
+        }
+
+        for(var i = 0; i < EVENTS.ON_SCREEN_LOAD.length; i++){
+
+            EVENTS.ON_SCREEN_LOAD[i].call(this);
+
+        }
+
+    };
+
+    screen.prototype.onBack = function(){
+
+        if(typeof this.defaults.onBackFn === 'function'){
+
+            this.defaults.onBackFn();
+
+        }
+
+        if(typeof this.defaults.onExitFn === 'function'){
+
+            this.defaults.onExitFn(function(){
+
+                this.remove();
+
+            }.bind(this));
+
+        } else {
+
+            this.remove();
+
+        }
+
+    };
+
+
+
+    function goto(name, qp){
+
+        if(HISTORY[HISTORY.length - 1].name === name){
+
+            return;
+
+        }
+
+        if(qp){
+            QUERY_PARAMS = qp;
+        } else {
+            QUERY_PARAMS = null;
+        }
+
+        if(SCREENS.hasOwnProperty(name)){
+
+            var _screen = SCREENS[name];
+
+            _screen.push();
+
+        }
+
+    };
+
+    function gotoAndReplace(name, qp){
+
+        if(qp){
+            QUERY_PARAMS = qp;
+        } else {
+            QUERY_PARAMS = null;
+        }
+
+        if(SCREENS.hasOwnProperty(name)){
+
+            var _screen = SCREENS[name];
+
+            _screen.replace();
+
+        }
+
+    };
+
+
+
     // Private functions
-    
+
     function add(name, opts){
-        
+
         if(checkDuplicate(name)){
-            
+
             throw '"' + name + '" already exists';
             return null;
-            
+
         } else {
-            
+
             var S = new screen(name, opts);
             SCREENS[name] = S;
-            
+
         }
-        
+
     };
-    
+
     function create(opts){
-        
+
         return new screen('temp', opts);
-        
+
     }
-    
+
     function checkDuplicate(name){
         for(var i in SCREENS){
             if(SCREENS.hasOwnProperty(name)){
@@ -1688,51 +1682,51 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         }
         return false;
     }
-    
+
     function firstRun(fn){
-        
+
         fn();
-        
+
     };
-    
-    
-    
+
+
+
     scope.ScreenManager = {
-        
+
         run: firstRun,
-        
+
         addScreen: add,
-        
+
         create: create,
-        
+
         goto: goto,
-        
+
         gotoAndReplace: gotoAndReplace,
-        
+
         addLoadEvent: function(fn){
-            
+
             if(typeof fn === 'function'){
-                
+
                 EVENTS.ON_SCREEN_LOAD.push(fn);
-                
+
             }
-            
+
         },
-        
+
         addUnloadEvent: function(fn){
-            
+
             if(typeof fn === 'function'){
-                
+
                 EVENTS.ON_SCREEN_KILL.push(fn);
-                
+
             }
-            
+
         },
-        
+
         history: HISTORY
-        
+
     };
-    
+
 })(window); // Screen manager
 
 (function(scope){
@@ -1748,23 +1742,23 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
     // -unitprice
     // -quantity
     // -totalprice
-    // 
+    //
     // itemscount
     // receipttotal
     // tax
     // nettotal
     // currency
-    // 
+    //
     */
 
     /*
     // Distinguishing factors for each type of receipt
-    // 
+    //
     // Unicenta
     // Item quantitiy starts with an 'x' followed by a number. Ex.: 'x2', 'x6'
-    // 
-    // 
-    // 
+    //
+    //
+    //
     */
 
     var rules = [
@@ -2016,7 +2010,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
     // separator
     // Straight forward
     //
-    
+
     /*
     * Regex rules to identify types of lines.
     * Parser goes through each line and tries to identify what type of line it is.
@@ -2029,15 +2023,15 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         table_head_unicenta: /^ *items? +price +(qty|quantity) +val(ue)? *$/i,
         table_head_posbill: /^ *(qty.?|quantity) +items? +price +total *$/i
     };
-    
+
     /*
     * Function accepts an input stream (type: string) of data which is NOT base64 encoded
     * Data sent to this function is decoded when retrieved from the server
     */
     function parser(stream){
-        
+
         /*
-        * 
+        *
         */
         var _stream = stream.replace(/[^€£\x00-\x7F]/g, ' '),
             _lines = _stream.replace(/\n\s+\n/g, '\n');
@@ -2048,7 +2042,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         this.parsed_lines = [];
         this.total = null;
         this.taxes = [];
-        
+
         parse.call(this, _lines);
 
         return this;
@@ -2166,35 +2160,35 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
                         tokens = _line2.split(' ');
 
                     if(flags.general_in_cost_line.length > 0){
-                        
+
                         item.name += computed_lines[flags.general_in_cost_line[0]].line + ' ';
 
                         flags.general_in_cost_line = [];
 
                     }
-                    
+
                     for(var x = 0; x < tokens.length; x++){
-                        
+
                         var token = tokens[x];
-                        
+
                         if(x === tokens.length - 1){
-                            
+
                             item.cost = token;
-                            
+
                         } else {
-                            
+
                             if(item.unit_cost == null && price_regex.test(token)){
-                                
+
                                 item.unit_cost = token;
-                                
+
                             } else {
-                                
+
                                 item.name += token + ' ';
-                                
+
                             }
-                            
+
                         }
-                        
+
                     }
 
                     this.parsed_lines.push({
@@ -2323,38 +2317,3 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
     scope.ParserV2 = parser;
 
 })(window); // Parsers
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
