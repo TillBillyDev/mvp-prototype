@@ -13,7 +13,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
     function get(obj){
 
         var xhr = new XMLHttpRequest(),
-            params = obj.params === undefined ? '' : Helpers.serialize(obj.params),
+            params = obj.params === undefined ? '' : serialize(obj.params),
             _session = Session.getSession(),
             success = obj.success || undefined,
             failure = obj.error || undefined;
@@ -96,7 +96,7 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
     function postPutDelete(method, obj){
 
         var xhr = new XMLHttpRequest(),
-            params = obj.params === undefined ? '' : Helpers.serialize(obj.params),
+            params = obj.params === undefined ? '' : serialize(obj.params),
             _session = Core.Services.Session.getSession(),
             success = obj.success || undefined,
             failure = obj.error || undefined;
@@ -184,6 +184,24 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
         }
 
     };
+
+    /**
+    * Internal method to serialize query parameters
+    */
+    function serialize(queryObject){
+        var paramArray = [],
+            queryString = '';
+
+        for(var p in queryObject){
+            if(queryObject.hasOwnProperty(p)){
+                paramArray.push(encodeURIComponent(p) + '=' + encodeURIComponent(queryObject[p]));
+            }
+        }
+
+        queryString = paramArray.join('&');
+
+        return queryString;
+    }
 
     scope.XHR = {
 
@@ -681,20 +699,6 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
         return source;
 
-    };
-
-    helpers.serialize = function(queryObject){
-        var paramArray = [],
-            queryString = "";
-
-        for(var p in queryObject){
-            if (queryObject.hasOwnProperty(p)){
-                paramArray.push(encodeURIComponent(p) + "=" + encodeURIComponent(queryObject[p]));
-            }
-        }
-
-        queryString = paramArray.join("&");
-        return queryString;
     };
 
     math.easeInOut = function (currentTime, start, change, duration) {
