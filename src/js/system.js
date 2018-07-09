@@ -1350,6 +1350,277 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
 })(window); // Router and history manager
 
+/**
+* Router v2.
+* Currently being developed for the web app but will extend to support
+* mobile/android routing as well.
+* Manages internal app routing, path checking and route loading.
+* Also allows developer to add paths.
+*/
+(function(scope){
+
+    var routes = {};
+
+    /*
+    * Initialize the Router and set up variables
+    */
+    function init(){
+
+        /*
+        * Temporary code to remove hashbang on local test environment
+        */
+        history.replaceState({}, '', location.href.replace('#/', ''));
+        console.log('Router is running');
+
+        /*
+        * onpopstate triggers everytime there is a browser navigation. Forward, Back or Reload.
+        * We assign the onpopstate event to run our checkPath function.
+        */
+        window.onpopstate = checkPath;
+
+        /**
+        * Alternate code for same behaviour. But with an event listener instead of
+        * direct assignment. Will need to test if it's working later on.
+        */
+        /*
+        window.addEventListener('onpopstate', function(){
+            checkPath();
+        });
+        */
+
+        /*
+        * Run the checkPath function to get the current location and load the page accordingly
+        * Also run the session logic if required
+        */
+        checkPath();
+
+    }
+
+    /*
+    * Internal function to add Routes to the route object
+    */
+    function add(routeObj){
+
+        /*
+        * Add a route
+        */
+        routes[routeObj.path] = {
+
+            /*
+            * The path name that'll be shown in browser address bar or invoked
+            * when this route is active
+            */
+            path: routeObj.path,
+
+            /*
+            * Public facing route for current path
+            */
+            public: routeObj.public ? new Core.Route(routeObj.public) : undefined,
+
+            /*
+            * Private (logged in) route for current path.
+            * If no private route is provided, it assigns itself to the public route
+            */
+            private: routeObj.private ? new Core.Route(routeObj.private) : new Core.Route(routeObj.public)
+
+        };
+
+    }
+
+    /*
+    * Check the current path and match it against the list of routes
+    */
+    function checkPath(){
+
+        /*
+        * Set local variables
+        * matchedRoute: Will be set to current route in case of a hit
+        */
+        var matchedRoute = null,
+
+            /*
+            * Formatted pathname of the current page
+            */
+            currentPath = fixSlashes(window.location.pathname);
+
+        /*
+        * If the currentPath is simply a "/", that means we are on the homepage.
+        * If not then we move on to further checking.
+        */
+        if(currentPath === '/'){
+
+            matchedRoute = routes['/'];
+
+        } else {
+
+            /*
+            * Iterate over the routes object
+            */
+            for(var r in routes){
+
+                /*
+                * Get a local copy of the current iteration of route
+                */
+                var route = routes[r];
+
+                /*
+                * Since we already checked for the homepage condition,
+                * we will skip the check for the home path - "/"
+                */
+                if(route.path === '/'){
+                    continue;
+                }
+
+                /*
+                * We match the current path in the browser with the list of paths we have
+                */
+                if(currentPath.match(route.path)){
+                    matchedRoute = route;
+                }
+
+            }
+
+        }
+
+        /*
+        * No match was found, we'll have to assign the matchedRoute to 404 route
+        */
+        if(!matchedRoute){
+            matchedRoute = routes['/404'];
+        }
+
+        /*
+        * Call the loadRoute method to load the matched route
+        */
+        loadRoute(matchedRoute);
+
+    }
+
+    /*
+    * Helper function to get formatted pathname
+    * _string: String to remove leading and trailing slash from
+    */
+    function fixSlashes(_string){
+
+        // Remove occurance of multiple forward slashes
+        _string = _string.replace(/\/\/+/g, '/');
+
+        // Remove leading slash
+        //_string = _string.replace(/^\//, '');
+
+        // Remove trailing slash
+        //_string = _string.replace(/\/$/, '');
+
+        return _string;
+    }
+
+    /*
+    * Load the matched route
+    */
+    function loadRoute(matchedRoute){
+
+        /*
+        * Variable to check if a session exists
+        */
+        var sessionExists = Core.SessionService.sessionExists(),
+
+            /*
+            * A local variable which holds public route by default
+            */
+            finalRoute = matchedRoute.public;
+
+        /*
+        * If a session exists, we need to set the route to a private one
+        */
+        if(sessionExists){
+
+            finalRoute = matchedRoute.private;
+
+        }
+
+        /*
+        * Proceed with the route loading process.
+        * First we check if the route has a redirection
+        */
+        if(finalRoute.redirection){
+
+            /*
+            * Grab a copy of redirected route. A public copy for now, will change it
+            * later if we find that a session exists.
+            */
+            var redirectedRoute = routes[finalRoute.redirection].public,
+
+                /*
+                * Generate a pathname for the redirection path
+                */
+                pathname = '';
+
+            /*
+            * If a session exists then we assign private route else it remains public
+            */
+            if(sessionExists){
+                redirectedRoute = routes[finalRoute.redirection].private;
+            }
+
+            /*
+            * A little compatibilty thing to get the absolute file path
+            */
+            if(location.origin){
+                pathname = location.origin + '/' + finalRoute.redirection;
+            } else{
+                pathname = location.protocol + '//' + location.hostname + finalRoute.redirection;
+            }
+
+            /*
+            * If a navigateTo exists, we attach this as a search parameter in the url
+            */
+            if(redirectedRoute.navigateTo){
+                pathname += '?navigateTo=' + redirectedRoute.navigateTo;
+            }
+
+            /*
+            * Replace the current state of browser history (path in address bar)
+            * with the one mentioned in the redirection
+            */
+            history.replaceState({}, '', pathname);
+
+            /*
+            * Finally, we load the new path
+            * Note: No callbacks are sent here, but the load method supports it
+            */
+            redirectedRoute.load();
+
+        } else {
+
+            /*
+            * The path had no redirection so we can simply load it
+            * Note: No callbacks are sent here, but the load method supports it
+            */
+            finalRoute.load();
+
+        }
+
+    }
+
+    /*
+    * Public functions
+    */
+    scope.Router = {
+
+        /*
+        * Public access to add routes/paths in the router
+        */
+        add: add,
+
+        /*
+        * Initialize and run the Router
+        */
+        init: init
+
+    };
+
+})(Core); // Router v2
+
 (function(scope){
 
     var SCREENS = {},
