@@ -546,6 +546,87 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
 })(window); // Events Service
 
+/*
+* Event v2 Service
+*/
+(function(scope){
+
+    // Events system
+
+    var events = scope.Events = Object.freeze({
+            onAppStart: 0,
+            onBeforePageChange: 1,
+            onPageLoading: 2,
+            onPageLoad: 3,
+            onClick: 'click',
+            onScroll: 'scroll',
+            onResize: 'resize'
+        }),
+
+        tempEventCue = {
+            click: [],
+            scroll: [],
+            resize: [],
+            start: [],
+            beforeChange: [],
+            onLoading: [],
+            onload: []
+        },
+
+        systemEventCue = {
+            click: [],
+            scroll: [],
+            resize: [],
+            start: [],
+            beforeChange: [],
+            onLoading: [],
+            onload: []
+        };
+
+    /*
+    * Add events
+    */
+    function add(){
+
+        var args = arguments;
+
+        if(args.length > 2){
+
+            var e = args[0];
+
+            switch(e){
+                // Statements to be added here
+
+            }
+
+        }
+
+    }
+
+
+    /*
+    * The main browser API to run functions after the DOM has loaded
+    */
+    document.addEventListener("DOMContentLoaded", init);
+
+    /*
+    * Initialization function to start the Event service and initialize the Router
+    */
+    function init(){
+
+        window.addEventListener('click', function(e){
+
+        });
+
+        /*
+        * Initialize the Router
+        */
+        Core.Router.init();
+
+    }
+
+})(window); // Event v2 Service
+
 (function(scope){
 
     var COLLECTION = {};
