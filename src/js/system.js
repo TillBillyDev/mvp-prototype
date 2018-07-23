@@ -546,56 +546,57 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
 })(window); // Events Service
 
-/*
-* Event v2 Service
+/**
+* Event Manager
 */
 (function(scope){
 
     // Events system
 
-    var events = scope.Events = Object.freeze({
-            onAppStart: 0,
-            onBeforePageChange: 1,
-            onPageLoading: 2,
-            onPageLoad: 3,
+    var events = Object.freeze({
             onClick: 'click',
             onScroll: 'scroll',
-            onResize: 'resize'
+            onResize: 'resize',
+            onPageLoad: 'onPageLoad',
+            onPageLoading: 'onPageLoading',
+            onBeforePageChange: 'onBeforePageChange'
+            //onAppStart: 'onAppStart',
         }),
 
         tempEventCue = {
             click: [],
             scroll: [],
             resize: [],
-            start: [],
-            beforeChange: [],
-            onLoading: [],
-            onload: []
+            onPageLoad: [],
+            onPageLoading: [],
+            onBeforePageChange: []
+            //onAppStart: []
         },
 
         systemEventCue = {
             click: [],
             scroll: [],
             resize: [],
-            start: [],
-            beforeChange: [],
-            onLoading: [],
-            onload: []
+            onPageLoad: [],
+            onPageLoading: [],
+            onBeforePageChange: []
+            //onAppStart: []
         };
 
-    /*
+    /**
     * Add events
     */
-    function add(){
+    function add(eventType, fn, isSystem){
 
-        var args = arguments;
+        if(typeof fn === 'function'){
 
-        if(args.length > 2){
+            if(!isSystem){
 
-            var e = args[0];
+                tempEventCue[eventType].push(fn);
 
-            switch(e){
-                // Statements to be added here
+            } else {
+
+                systemEventCue[eventType].push(fn);
 
             }
 
@@ -603,29 +604,297 @@ var TEMPLATE_BASE_PATH = '';// /android ?\d+.\d/gi.test(navigator.userAgent) ? '
 
     }
 
-
-    /*
+    /**
     * The main browser API to run functions after the DOM has loaded
     */
     document.addEventListener("DOMContentLoaded", init);
 
-    /*
+    /**
     * Initialization function to start the Event service and initialize the Router
+    * Note: Order of initializations here is important. Router initialization should
+    * happen at the end.
     */
     function init(){
 
-        window.addEventListener('click', function(e){
+        /**
+        * Initialize the Module manager
+        */
+        System.Module.init();
 
-        });
-
-        /*
+        /**
         * Initialize the Router
         */
-        Core.Router.init();
+        System.Router.init();
 
     }
 
-})(window); // Event v2 Service
+    /**
+    * Run on page load functions
+    */
+    function onPageLoad(){
+
+        // Call all the functions in both temp and system cues
+        triggerEvent(events.onPageLoad);
+
+        // Since page load is the last event, we call clearTempEvents
+        // to clear all temporary events created by a page/route controller
+        clearTempEvents();
+
+    }
+
+    /**
+    * Run on page loading functions
+    */
+    function onPageLoading(){
+        triggerEvent(events.onPageLoading);
+    }
+
+    /**
+    * Run on before page change functions
+    */
+    function onBeforePageChange(){
+        triggerEvent(events.onBeforePageChange);
+    }
+
+    /**
+    * Event running template
+    */
+    function triggerEvent(eventType){
+
+        /**
+        * Get a local reference for each temporary and system level events array
+        */
+        var tem = tempEventCue[eventType],
+            sys = systemEventCue[eventType];
+
+        /**
+        * Loop through and run the functions in temporary events array
+        */
+        for(var i = 0; i < tem.length; i++){
+
+            // Check to see if the variable is a function
+            if(typeof tem[i] === 'function'){
+
+                // If it is, then we run it
+                tem[i]();
+
+            }
+
+        }
+
+        /**
+        * Loop through and run the functions in system events array
+        */
+        for(var j = 0; j < sys.length; j++){
+
+            // Check to see if the variable is a function
+            if(typeof sys[j] === 'function'){
+
+                // If it is, then we run it
+                sys[j]();
+
+            }
+
+        }
+
+    }
+
+    /**
+    * Clear temporary events
+    * Resets the arrays in tempEventCue object
+    */
+    function clearTempEvents(){
+        tempEventCue.click= [];
+        tempEventCue.scroll= [];
+        tempEventCue.resize= [];
+        tempEventCue.onPageLoad= [];
+        tempEventCue.onPageLoading= [];
+        tempEventCue.onBeforePageChange= [];
+    }
+
+    /**
+    * Private (system) functions which are called by the router based on
+    * the current state of app
+    */
+    System.RunEvent = {
+
+        // Reference to local onPageLoad function
+        onPageLoad: onPageLoad,
+
+        // Reference to local onPageLoading function
+        onPageLoading: onPageLoading,
+
+        // Reference to local onBeforePageChange function
+        onBeforePageChange: onBeforePageChange
+
+    }
+
+    /**
+    * A private (system) endpoint to add events to the list of events
+    * This is a wrapper function for the local "add" function with isSystem
+    * parameter set to true
+    */
+    System.AddEvent = function(eventType, fn){
+
+        // Call to local add function with isSystem set to true
+        add(eventType, fn, true);
+
+    };
+
+    /**
+    * A public property to get (return) a list of events
+    */
+    System.Events = events;
+
+    /**
+    * Public property to add events and retrieve event types
+    */
+    scope.Events = {
+
+        // A public property to add events to the Event manager
+        add: add,
+
+        // A public property to get (return) a list of events
+        type: events
+
+    };
+
+})(Core); // Event Manager
+
+/**
+* Module Manager
+*/
+(function(scope){
+
+    /**
+    * Local variable which links to a public property "Module" to add/register modules
+    */
+    var module = {},
+
+        /**
+        * Local variables to maintain a list of all the modules
+        */
+        registered = {};
+
+    /**
+    * To register modules in the Module Manager
+    * @param {string} name of the module
+    * @param {object} obj containing events of the module
+    */
+    module.register = function(name, obj){
+
+        /**
+        * Create a new moduleCreator object with the supplied properties
+        */
+        var m = new moduleCreator(name, {
+            onPageLoad: obj.onPageLoad || null,
+            onPageLoading: obj.onPageLoading || null,
+            onBeforePageChange: obj.onBeforePageChange || null,
+            onAppStart: obj.onAppStart || null
+        });
+
+        /**
+        * Register the module with Module Manager.
+        * Can have more enhanced logic for handling duplicate entries.
+        */
+        registered[name] = m;
+
+    }
+
+    /**
+    * Module creator class template
+    * @param {string} name
+    *  Name of the module
+    * @param {object} obj
+    *  Object that contains all the events hooked to an instance of this class
+    */
+    function moduleCreator(name, obj){
+        this.name = name;
+        this.onPageLoad = obj.onPageLoad || null;
+        this.onPageLoading = obj.onPageLoading || null;
+        this.onBeforePageChange = obj.onBeforePageChange || null;
+        this.onAppStart = obj.onAppStart || null;
+    }
+
+    /**
+    * This initializes module manager and sets up app events
+    */
+    function init(){
+
+        /**
+        * Loop through all the modules that are registered in modules.
+        * We check if the attached property is of type 'function' before
+        * adding it to the Event manager.
+        */
+        for(var m in registered){
+
+            // Get a reference of the current module
+            var current = registered[m];
+
+            /**
+            * Immediately call the onAppStart functions as these are only one time
+            * events and we do not need to register them with the Event manager
+            */
+            if(typeof current.onAppStart === 'function'){
+
+                // Call the onAppStart function
+                current.onAppStart();
+
+                /**
+                * Delete the onAppStart property from the object as it is not
+                * required anymore
+                */
+                // Deletion code goes here
+
+            }
+
+            /**
+            * Register onPageLoad events
+            */
+            if(typeof current.onPageLoad === 'function'){
+
+                System.AddEvent(System.Events.onPageLoad, current.onPageLoad);
+
+            }
+
+            /**
+            * Register onPageLoading events
+            */
+            if(typeof current.onPageLoading === 'function'){
+
+                System.AddEvent(System.Events.onPageLoading, current.onPageLoading);
+
+            }
+
+            /**
+            * Register onBeforePageChange events
+            */
+            if(typeof current.onBeforePageChange === 'function'){
+
+                System.AddEvent(System.Events.onBeforePageChange, current.onBeforePageChange);
+
+            }
+
+        }
+
+    }
+
+    /**
+    * Public endpoint for the module manager
+    */
+    scope.Module = module;
+
+    /**
+    * Private endpoint for module manager
+    */
+    System.Module = {
+
+        // Calls the local (private) init function
+        init: init
+
+    };
+
+})(Core); // Module Manager
 
 (function(scope){
 
